@@ -23,10 +23,10 @@
     "serve": "^11.3.2"
   },
   "dependencies": {
+    "dat.gui": "^0.7.9",
     "dxf-writer": "^1.15.1",
     "jspdf": "^2.4.0",
     "stats.js": "0.17.0",
-    "three": "0.135",
     "three-mesh-bvh": "^0.5.11",
     "web-ifc": "^0.0.35",
     "web-ifc-viewer": "1.0.213"
