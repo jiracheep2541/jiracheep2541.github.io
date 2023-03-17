@@ -8,6 +8,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="./styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/css/bootstrap.min.css" integrity="sha512-Ez0cGzNzHR1tYAv56860NLspgUGuQw16GiOOp/I2LuTmpSK9xDXlgJz3XN4cnpXWDmkNBKXR/VDMTCnAaEooxA==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IFC.js</title>
 </head>
@@ -15,10 +19,20 @@
 <body>
     <div id="viewer-container">
     </div>
-    <div id="loading-overlay" class="loading-overlay hidden">
-        <h1 id="loading-progress" class="loading-progress"></h1>
+
+    <div id="menu-bottom" style="position: absolute; bottom: 5px; left: 0; width: 100%; padding: 10px;">
+        <div class="row" style="margin: 0 auto; width: 120px; text-align: center">
+
+            <div id="mode" data-type="select" class="fa-solid fa-arrow-pointer" style="font-size: 25px; color: #0d6efd; margin: 5px; width: 48px; height: 44px; padding: 8px; border: 1px solid #0d6efd; border-radius: 8%; background-color: #fff; cursor: pointer;">
+            </div>
+            <div id="mode" data-type="plane" class="fa-solid fa-layer-group" style="font-size: 25px; color: #fff; margin: 5px; width: 48px; height: 44px; padding: 8px; border: 1px solid #2c2c2c; border-radius: 8%; background-color: #1a1a1a; cursor: pointer;">
+            </div>
+
+        </div>
     </div>
+
     <script type="module" src="bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.min.js" integrity="sha512-EKWWs1ZcA2ZY9lbLISPz8aGR2+L7JVYqBAYTq5AXgBkSjRSuQEGqWx8R1zAX16KdXPaCjOCaKE8MCpU0wcHlHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 
 </html>

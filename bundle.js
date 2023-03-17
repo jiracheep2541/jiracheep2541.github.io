@@ -124383,6 +124383,8 @@ function updateDisplays(controllerArray) {
 }
 var GUI$1 = GUI;
 
+var mode = 'select';
+
 // import * as THREE from 'three';
 // import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 // import { OrbitControlsGizmo } from "three/examples/jsm/controls/OrbitControlsGizmo.js";
@@ -124404,13 +124406,23 @@ var camera = viewer.IFC.context.getCamera();
 viewer.IFC.context.getRenderer();
 viewer.context.ifcCamera.cameraControls;
 
-// var controlsGizmo = new OrbitControlsGizmo(controls, { size: 100, padding: 8 });
+// controls.enabled = false;
+
+// var _controls = new OrbitControls(camera, renderer.domElement);
+// var controlsGizmo = new OrbitControlsGizmo(_controls, { size: 100, padding: 10 });
+
+// controlsGizmo.domElement.style.position = 'absolute';
+// controlsGizmo.domElement.style.bottom = '30px';
+// controlsGizmo.domElement.style.right = '30px';
+// controlsGizmo.domElement.style.zIndex = 999;
+
+// container.appendChild(controlsGizmo.domElement);
 
 // console.log('OKJKJKJKJKJKKKKKKKKKKKKK', controlsGizmo)
 
 // const OrbitControls = new OrbitControls(camera, renderer.domElement);
 
-// viewer.context.ifcCamera.cameraControls.enabled = false;
+
 
 // camera.fov = fov;
 // camera.aspect = aspect;
@@ -124418,8 +124430,6 @@ viewer.context.ifcCamera.cameraControls;
 // camera.far = far;
 // camera.position.set(-1.8, 0.6, 2.7);
 // camera.updateProjectionMatrix();
-
-var ck = true;
 
 var GUIControl = {
     get fov() {
@@ -124442,12 +124452,6 @@ var GUIControl = {
     set far(value) {
         camera.far = value;
         camera.updateProjectionMatrix();
-    },
-    get checkbox() {
-        return ck;
-    },
-    set checkbox(value) {
-        ck = ck ? false : true;
     }
 };
 
@@ -124618,12 +124622,18 @@ async function loadIfc(url) {
     for (let i = 1; i < keyTypesMap.length; i++) {
         let key = keyTypesMap[i].split('IFC')[1];
         GUIControlModels[key] = true;
-        folder_models.add(GUIControlModels, key).onChange(function(checked) {
+        let f = folder_models.add(GUIControlModels, key).onChange(function(checked) {
             let name = 'IFC' + key;
             let subset = subsets[makeTypesMap[name]];
             if (checked) scene.add(subset);
             else subset.removeFromParent();
         });
+
+        f.domElement.style.position = 'absolute';
+        f.domElement.style.right = '0';
+        f.domElement.style.width = '10%';
+
+        f.domElement.parentNode.firstChild.style.width = '100%';
     }
 
     let hover = folder_models.domElement.lastElementChild;
@@ -124633,48 +124643,45 @@ async function loadIfc(url) {
     hover.addEventListener("mousemove", (event) => {
         try {
             let target = event.target;
-            if (typeof target.firstChild.type != 'undefined') {
-                if (typeof target.firstChild.attributes.type.value != 'undefined') {
-                    if (target.firstChild.attributes.type.value == 'checkbox') {
-                        let type = event.target.parentNode.firstChild.innerText;
-                        let name = 'IFC' + type;
+            if (target.className == 'property-name') {
+                let type = event.target.innerText;
+                let name = 'IFC' + type;
 
-                        let subset = subsetsHover[makeTypesMap[name]];
+                let subset = subsetsHover[makeTypesMap[name]];
 
-                        if (typeof subset == 'undefined') {
-                            let key = Object.keys(subsetsHover);
-                            for (let i in key) {
-                                subsetsHover[key[i]].removeFromParent();
-                                delete subsetsHover[key[i]];
-                            }
-                            activeSubset();
-                        }
-
-                        async function activeSubset() {
-                            let ids = await viewer.IFC.loader.ifcManager.getAllItemsOfType(0, makeTypesMap[name], false);
-
-                            // Creates subset material
-                            const material = new MeshLambertMaterial({
-                                transparent: true,
-                                opacity: 0.5,
-                                color: 0xffeb3b,
-                                depthTest: false,
-                            });
-
-                            let e = viewer.IFC.loader.ifcManager.createSubset({
-                                modelID: modelID,
-                                ids: ids,
-                                material: material,
-                                scene: scene,
-                                removePrevious: true
-                            });
-
-                            subsetsHover[makeTypesMap[name]] = e;
-                            subsetsHoverState = makeTypesMap[name];
-                        }
+                if (typeof subset == 'undefined') {
+                    let key = Object.keys(subsetsHover);
+                    for (let i in key) {
+                        subsetsHover[key[i]].removeFromParent();
+                        delete subsetsHover[key[i]];
                     }
+                    activeSubset();
+                }
+
+                async function activeSubset() {
+                    let ids = await viewer.IFC.loader.ifcManager.getAllItemsOfType(0, makeTypesMap[name], false);
+
+                    // Creates subset material
+                    const material = new MeshLambertMaterial({
+                        transparent: true,
+                        opacity: 0.5,
+                        color: 0xffeb3b,
+                        depthTest: false,
+                    });
+
+                    let e = viewer.IFC.loader.ifcManager.createSubset({
+                        modelID: modelID,
+                        ids: ids,
+                        material: material,
+                        scene: scene,
+                        removePrevious: true
+                    });
+
+                    subsetsHover[makeTypesMap[name]] = e;
+                    subsetsHoverState = makeTypesMap[name];
                 }
             }
+
         } catch {}
     });
 
@@ -124734,11 +124741,40 @@ window.onmousemove = () => {
     viewer.IFC.selector.prePickIfcItem();
 };
 window.onkeydown = handleKeyDown;
-window.ondblclick = async() => {
+// window.ondblclick = async() => {
 
-    // if (viewer.clipper.active) {
-    viewer.clipper.createPlane();
+//     // if (viewer.clipper.active) {
+//     // viewer.clipper.createPlane();
 
 
-    // console.log(await viewer.IFC.selector.highlightIfcItem(true))
+//     // console.log(await viewer.IFC.selector.highlightIfcItem(true))
+// };
+
+window.onmousedown = async(event) => {
+    let target = event.target;
+    let el = target.getAttribute('id');
+    if (typeof el != 'undefined' && el == 'mode') {
+        let dataType = target.getAttribute('data-type');
+        mode = dataType;
+
+        if (mode == 'select') {
+            target.setAttribute('style', 'font-size: 25px; color: #0d6efd; margin: 5px; width: 48px; height: 44px; padding: 8px; border: 1px solid #0d6efd; border-radius: 8%; background-color: #fff; cursor: pointer;');
+            target.nextElementSibling.setAttribute('style', 'font-size: 25px; color: #fff; margin: 5px; width: 48px; height: 44px; padding: 8px; border: 1px solid #2c2c2c; border-radius: 8%; background-color: #1a1a1a; cursor: pointer;');
+        }
+        if (mode == 'plane') {
+            target.setAttribute('style', 'font-size: 25px; color: #0d6efd; margin: 5px; width: 48px; height: 44px; padding: 8px; border: 1px solid #0d6efd; border-radius: 8%; background-color: #fff; cursor: pointer;');
+            target.previousElementSibling.setAttribute('style', 'font-size: 25px; color: #fff; margin: 5px; width: 48px; height: 44px; padding: 8px; border: 1px solid #2c2c2c; border-radius: 8%; background-color: #1a1a1a; cursor: pointer;');
+        }
+    }
+
+    // if (mode == 'select') {
+    //     if (viewer.clippe.planes.length > 0) {
+    //         viewer.clipper.deleteAllPlanes();
+    //     }
+    // }
+    if (mode == 'plane') {
+        viewer.clipper.createPlane();
+    }
+
+    console.log('mode', mode);
 };
