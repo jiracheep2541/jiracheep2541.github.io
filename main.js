@@ -31,9 +31,9 @@ import {
 
 import * as dat from 'dat.gui';
 
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { OrbitControlsGizmo } from "three/examples/jsm/controls/OrbitControlsGizmo.js";
+// import * as THREE from 'three';
+// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+// import { OrbitControlsGizmo } from "three/examples/jsm/controls/OrbitControlsGizmo.js";
 
 const container = document.getElementById('viewer-container');
 const viewer = new IfcViewerAPI({ container, backgroundColor: new Color(255, 255, 255) });
