@@ -11,7 +11,8 @@ import {
     BufferAttribute,
     Mesh,
     Raycaster,
-    MeshLambertMaterial
+    MeshLambertMaterial,
+    PerspectiveCamera
 } from 'three';
 
 import {
@@ -34,11 +35,11 @@ import * as dat from 'dat.gui';
 var mode = 'select';
 
 // import * as THREE from 'three';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-// import { OrbitControlsGizmo } from "three/examples/jsm/controls/OrbitControlsGizmo.js";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { OrbitControlsGizmo } from "three/examples/jsm/controls/OrbitControlsGizmo.js";
 
-const container = document.getElementById('viewer-container');
-const viewer = new IfcViewerAPI({ container, backgroundColor: new Color(255, 255, 255) });
+var container = document.getElementById('viewer-container');
+var viewer = new IfcViewerAPI({ container, backgroundColor: new Color(255, 255, 255) });
 // viewer.axes.setAxes();
 // viewer.grid.setGrid();
 // viewer.shadowDropper.darkness = 1.5;
@@ -50,21 +51,26 @@ const viewer = new IfcViewerAPI({ container, backgroundColor: new Color(255, 255
 // const near = 0.25;
 // const far = 20;
 
+// var _camera = new PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.25, 20);
+
 var camera = viewer.IFC.context.getCamera();
 var renderer = viewer.IFC.context.getRenderer();
-var controls = viewer.context.ifcCamera.cameraControls;
+// var controls = viewer.context.ifcCamera.cameraControls;
+
+var controls = new OrbitControls(camera, renderer.domElement);
+viewer.IFC.context.ifcCamera.cameraControls = controls;
 
 // controls.enabled = false;
 
-// var _controls = new OrbitControls(camera, renderer.domElement);
-// var controlsGizmo = new OrbitControlsGizmo(_controls, { size: 100, padding: 10 });
 
-// controlsGizmo.domElement.style.position = 'absolute';
-// controlsGizmo.domElement.style.bottom = '30px';
-// controlsGizmo.domElement.style.right = '30px';
-// controlsGizmo.domElement.style.zIndex = 999;
+var controlsGizmo = new OrbitControlsGizmo(controls, { size: 150, padding: 20 });
 
-// container.appendChild(controlsGizmo.domElement);
+controlsGizmo.domElement.style.position = 'absolute';
+controlsGizmo.domElement.style.bottom = '30px';
+controlsGizmo.domElement.style.right = '50px';
+controlsGizmo.domElement.style.zIndex = 999;
+
+container.appendChild(controlsGizmo.domElement);
 
 // console.log('OKJKJKJKJKJKKKKKKKKKKKKK', controlsGizmo)
 
@@ -361,7 +367,7 @@ async function loadIfc(url) {
 
 };
 
-loadIfc('models/Walkers.ifc');
+loadIfc('models/720 Northern Blvd_IFC.ifc');
 
 const inputElement = document.createElement('input');
 inputElement.setAttribute('type', 'file');
